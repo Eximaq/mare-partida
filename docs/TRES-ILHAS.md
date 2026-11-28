@@ -1,5 +1,7 @@
 # Ilha dos Animais Raros, Vila Syrup e Baratie
 
+> Registro do pacote original de mapas e sprites. Vila Syrup e Baratie agora usam cenários pintados próprios; seus arquivos de imagem anteriores e os IDs dos encontros foram preservados. Consulte [Vila Syrup](VILA-SYRUP.md) e [Baratie](BARATIE.md) para a geometria e as chegadas atuais. A descrição de terreno abaixo documenta o pacote anterior.
+
 Os três mapas vieram da biblioteca PixelLab existente, exportados em recortes nativos de 64×64 e montados localmente. Nenhum comando de geração foi enviado. Os arquivos de terreno e objetos são PNGs de fundo com grade de IDs em `new-islands-data.js`; a navegação usa essa grade. A parte vazia ao sul da Ilha dos Animais Raros foi omitida da área jogável.
 
 As posições dos objetos visíveis foram lidas do mapa original e guardadas em `new-islands-objects.js`. A engine cria colisores compactos junto à base de árvores, casas, mesas, bancadas, barris e demais objetos; entradas e corredores permanecem livres. Colisores são usados tanto pelo jogador quanto pelos monstros e pelo cálculo de rotas. Objetos sem imagem armazenada na origem foram ignorados porque não aparecem no mapa.

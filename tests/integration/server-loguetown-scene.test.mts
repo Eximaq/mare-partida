@@ -61,7 +61,7 @@ test('Loguetown migration reanchors only recognized city saves and preserves pro
    const before=await snapshot(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,2))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
    const city=expected.character_world.find((r:any)=>r.character_id===people[0]!.c.id);Object.assign(city,{x:2048,y:2736,path:[],speed:0,motion_until:city.started_at});
-   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
+   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);await f.pool.query(await readFile(new URL(sceneMigration,source),'utf8'));assert.deepEqual(await snapshot(f.pool),expected);
    const resumed=await people[0]!.read();assert.deepEqual(resumed.world.position,{x:2048,y:2736});assert.equal(resumed.battle.rulesHash,E.rulesHash);
    for(const key of ['hp','energy','cooldowns','hunts'])assert.deepEqual(resumed.battle[key],originals[0][key],key);

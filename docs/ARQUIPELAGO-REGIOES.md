@@ -31,7 +31,7 @@ O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do 
 
 Os previews usam os sprites existentes: Capitão da Caldeira na Ilha Dawn e Guardião da Caldeira na Cidade das Conchas. A folha de oito direções do Capitão é recortada para uma única célula, sem editar o PNG. Não havendo monstro configurado, a moldura mostra uma silhueta com interrogação e **Indisponível**. O mesmo fallback cobre falhas ao carregar a imagem.
 
-A Ilha dos Animais Raros, Vila Syrup, Baratie e Parque Arlong usam os mapas já existentes no PixelLab. Kuroobi e Chew usam suas animações originais e retornam após 60 segundos. Ver [TRÊS-ILHAS.md](TRES-ILHAS.md) e [ARLONG-PARK.md](ARLONG-PARK.md).
+A Ilha dos Animais Raros usa o mapa existente do PixelLab. Vila Syrup, Baratie e Parque Arlong usam pinturas HD próprias, preservando as imagens anteriores. Kuroobi e Chew usam suas animações originais e retornam após 60 segundos. Ver [TRÊS-ILHAS.md](TRES-ILHAS.md), [VILA-SYRUP.md](VILA-SYRUP.md), [BARATIE.md](BARATIE.md) e [ARLONG-PARK.md](ARLONG-PARK.md).
 
 Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado e poções. Loguetown mostra **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
 

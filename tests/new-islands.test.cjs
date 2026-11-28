@@ -18,6 +18,7 @@ for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',
     // Painted maps author their own footprints and bake those feet into the
     // navigation mask. The old sprite-count threshold is not their contract.
     const landmarks={
+      syrup:['kaya-mansion','village-tavern','village-well'],
       arlong:['shark-palace','south-gate-west','south-gate-east'],
       baratie:['restaurant-house','west-mooring-post','east-mooring-post']
     };

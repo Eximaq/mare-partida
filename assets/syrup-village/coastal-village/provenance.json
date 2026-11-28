@@ -1,0 +1,44 @@
+{
+  "asset": "syrup-coastal-village-hd",
+  "created": "2026-11-27",
+  "generator": "image_gen built-in image generation",
+  "promptFile": "generation-prompt.txt",
+  "file": "scene-hd.png",
+  "format": "PNG",
+  "nativeWidth": 1448,
+  "nativeHeight": 1086,
+  "sha256": "32528120a20ef291ad7e32498db928889fe1dbe68eab584eb7e6db1381050920",
+  "bytes": 3821390,
+  "integration": {
+    "worldWidth": 3072,
+    "worldHeight": 2304,
+    "worldUnitsAreNotImagePixels": true,
+    "processing": "Original generated PNG copied byte for byte; no resize, crop or recompression.",
+    "rendering": "Proportional camera crops of the full original image, high-quality smoothing local to painted scenery.",
+    "depth": "34 authored silhouettes clipped from this painting and 41 physical footprints.",
+    "floor": "Five connected floor polygons: village plateau, cottage lane, estate garden, cliff road/cove and pier. Sea and vertical cliff faces remain blocked."
+  },
+  "references": [
+    {
+      "url": "https://live-action.onepiece-base.com/location/syrup-village/",
+      "source": "ONE PIECE official — Syrup Village location",
+      "purpose": "Primary reference for the separate Kaya estate and maintained garden; the generated map follows the anime rural identity rather than the denser live-action shipyard."
+    },
+    {
+      "url": "https://opwiki.org/wiki/Gecko-Insel",
+      "source": "OPwiki — Gecko Island / Syrup",
+      "purpose": "Secondary reference with manga chapter citations: rural cottages, wooded hills, Kaya mansion, north/south coastal slopes and cliffs."
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0770/3425/8763/files/village_sirop_usopp_one_piece.jpg?v=1701946289",
+      "source": "Anime village panorama, secondary image host",
+      "purpose": "Visual research only: spaced cream cottages, thatch/slate roofs, winding dirt paths, grassy hills and the blue-roofed mansion."
+    }
+  ],
+  "preservedImages": {
+    "assets/new-islands/syrup-map.png": "e4f8d714f4b9047727a483a5a6fef98736c9879498e118dac78a0c195332672a",
+    "assets/exported-maps/syrup/map.png": "3188b90071a00b3132c7269cadb65d8a992950a7140f0d385bec44ea364b610a",
+    "assets/ui/voyage-hd/syrup.png": "0a0de02524f5b8466bc92407fc83411a2fda1dd6fc81bfab48408ce66b014cd4"
+  },
+  "provenance": "Original generated illustration commissioned for the user-requested One Piece fan-game location. Reference images were used for research and are not redistributed in the repository. The playable arrangement is an original adaptation, not an exact canonical floor plan. One Piece motifs remain associated with their respective rights holders; this record does not assert a third-party commercial license."
+}

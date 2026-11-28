@@ -61,7 +61,7 @@ test('Arlong migration reanchors only recognized park saves and preserves progre
    const before=await snapshot(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,2))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
    const park=expected.character_world.find((r:any)=>r.character_id===people[0]!.c.id);Object.assign(park,{x:1536,y:2080,path:[],speed:0,motion_until:park.started_at});
-   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0069_baratie_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
+   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0069_baratie_hd_map.sql','0070_syrup_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);await f.pool.query(await readFile(new URL(sceneMigration,source),'utf8'));assert.deepEqual(await snapshot(f.pool),expected);
    const resumed=await people[0]!.read();assert.deepEqual(resumed.world.position,{x:1536,y:2080});assert.equal(resumed.battle.rulesHash,E.rulesHash);
    for(const key of ['hp','energy','cooldowns','hunts'])assert.deepEqual(resumed.battle[key],originals[0][key],key);
